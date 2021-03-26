@@ -1,0 +1,8 @@
+.gradle/
+.cxx/
+.idea/
+intermediates/
+outputs/
+generated/
+tmp/
+local.properties
