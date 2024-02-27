@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef _FRM_USER_INTERFACE_H_
 #define _FRM_USER_INTERFACE_H_
@@ -103,10 +108,10 @@ public:
     BOOL AddOverlay( VOID* hTextureHandle, FLOAT32 fX, FLOAT32 fY, UINT32 nWidth, UINT32 nHeight );
     BOOL AddTextString( CHAR* strText, FLOAT32 fX, FLOAT32 fY, FLOAT32 fSize = 0.8f );
     BOOL AddHelpKey( CHAR* strKey, CHAR* strAction );
-    BOOL AddFloatVariable( FLOAT32* pVariable, CHAR* strName, CHAR* strFormat = "%4.2f" );
-    BOOL AddStringVariable( const CHAR** pVariable, CHAR* strName, CHAR* strFormat = "%s" );
-    BOOL AddIntVariable( INT32* pVariable, CHAR* strName, CHAR* strFormat = "%d" );
-    BOOL AddBoolVariable( BOOL* pVariable, CHAR* strName, CHAR* strTrue = "True", CHAR* strFalse = "False" );
+    BOOL AddFloatVariable( FLOAT32* pVariable, CHAR* strName, const CHAR* strFormat = "%4.2f" );
+    BOOL AddStringVariable( const CHAR** pVariable, CHAR* strName, const CHAR* strFormat = "%s" );
+    BOOL AddIntVariable( INT32* pVariable, CHAR* strName, const CHAR* strFormat = "%d" );
+    BOOL AddBoolVariable( BOOL* pVariable, CHAR* strName, const CHAR* strTrue = "True", const CHAR* strFalse = "False" );
 
     // Handle which state the user interface is in
     VOID AdvanceState();

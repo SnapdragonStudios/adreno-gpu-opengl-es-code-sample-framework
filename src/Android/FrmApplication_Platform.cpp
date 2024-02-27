@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #include "FrmPlatform.h"
 #include "FrmApplication.h"
@@ -39,11 +44,11 @@ protected:
 	EGLContext			m_eglContext;
 
 	// Sensor members (for accel and gyro)
-    ASensorManager	   *m_sensorManager;    
-	const ASensor	   *m_accelSensor;    
-	ASensorEventQueue  *m_accelEventQueue;
-	const ASensor	   *m_gyroscopeSensor;    
-	ASensorEventQueue  *m_gyroscopeEventQueue;
+    ASensorManager	   *m_sensorManager = nullptr;    
+	const ASensor	   *m_accelSensor = nullptr;    
+	ASensorEventQueue  *m_accelEventQueue = nullptr;
+	const ASensor	   *m_gyroscopeSensor = nullptr;    
+	ASensorEventQueue  *m_gyroscopeEventQueue = nullptr;
 };
 
 
@@ -133,12 +138,15 @@ void CFrmAppContainer::Destroy()
 //--------------------------------------------------------------------------------------
 BOOL CFrmAppContainer::Run()
 {
+#define ADRENO_SENSOR_MANAGER 0 //SensorManager is deprecated
+#if ADRENO_SENSOR_MANAGER
 	// Prepare to monitor accelerometer and gyroscope
 	m_sensorManager       = ASensorManager_getInstance();    
 	m_accelSensor         = ASensorManager_getDefaultSensor(m_sensorManager, ASENSOR_TYPE_ACCELEROMETER);
 	m_accelEventQueue     = ASensorManager_createEventQueue(m_sensorManager, m_pAndroidApp->looper, LOOPER_ID_USER, NULL, NULL);
 	m_gyroscopeSensor     = ASensorManager_getDefaultSensor(m_sensorManager, ASENSOR_TYPE_GYROSCOPE);
 	m_gyroscopeEventQueue = ASensorManager_createEventQueue(m_sensorManager, m_pAndroidApp->looper, (LOOPER_ID_USER + 1), NULL, NULL);
+#endif//ADRENO_SENSOR_MANAGER
 
 	while (1)
 	{
@@ -559,9 +567,6 @@ void handle_cmd(android_app *pApp, int32_t cmd) {
 //--------------------------------------------------------------------------------------
 void android_main(android_app* pApp)
 {
-	// Native glue may get stripped if this is omitted
-	app_dummy();
-
 	CFrmAppContainer appContainer;
 	appContainer.SetAndroidApp(pApp);
 	pApp->userData = &appContainer;

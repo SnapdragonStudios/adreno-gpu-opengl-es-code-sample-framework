@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef ADRENO_MESH_H
 #define ADRENO_MESH_H
@@ -20,6 +25,8 @@ namespace Adreno
         INT32            JointIndex;
         
         Mesh();
+
+        void AssertValid() const;
     };
 }
 

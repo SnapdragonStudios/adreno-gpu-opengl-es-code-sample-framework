@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #include <FrmPlatform.h>
 #define GL_GLEXT_PROTOTYPES
@@ -52,6 +57,17 @@ CSample::CSample( const CHAR* strName ) : CFrmApplication( strName )
 //--------------------------------------------------------------------------------------
 BOOL CSample::Initialize()
 {
+    const char*const GL_EXT_multisampled_render_to_texture_cStr = "GL_EXT_multisampled_render_to_texture";
+    const bool GL_EXT_multisampled_render_to_texture_supported = FrmGLExtensionSupported(GL_EXT_multisampled_render_to_texture_cStr);
+    if(!GL_EXT_multisampled_render_to_texture_supported)
+    {
+        LOGI("Extension %s ia not supported; sample can't run", GL_EXT_multisampled_render_to_texture_cStr);
+        ADRENO_ASSERT(GL_EXT_multisampled_render_to_texture_supported, __FILE__, __LINE__);
+        return FALSE;//sample can't run
+    }    
+    m_glFramebufferTexture2DMultisampleEXT = (PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXTPROC)eglGetProcAddress("glFramebufferTexture2DMultisampleEXT");
+    ADRENO_ASSERT(m_glFramebufferTexture2DMultisampleEXT, __FILE__, __LINE__);
+    
     // Setup font to be used for UI
     {
         if (FALSE == m_Font.Create("Tuffy16.pak"))
@@ -139,7 +155,7 @@ BOOL CSample::CreateFBO( UINT32 width, UINT32 height, UINT32 format, UINT32 type
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, (*ppFBO)->m_hRenderBuffer);
 
     if(isOptimized) {
-        glFramebufferTexture2DMultisampleEXT(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (*ppFBO)->m_hColorBuffer, 0, 4);
+        m_glFramebufferTexture2DMultisampleEXT(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (*ppFBO)->m_hColorBuffer, 0, 4);
     } else {
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, (*ppFBO)->m_hColorBuffer);
     }

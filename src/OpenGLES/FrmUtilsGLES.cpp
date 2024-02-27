@@ -1,15 +1,23 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
-#include "FrmPlatform.h"
 #include "OpenGLES/FrmUtilsGLES.h"
-#include "OpenGLES/FrmShader.h"
+
+#include <GLES3/gl31.h>
+#include <string.h>
 #include "FrmFile.h"
+#include "FrmPlatform.h"
+#include "OpenGLES/FrmShader.h"
 
 
 //--------------------------------------------------------------------------------------
 // Name: FrmRenderTextureToScreen()
-// Desc: Helper function to render a texture in screenspace.
+// Desc: Helper function to render a texture in screenspace -- FrmBlitAvoidGMemLoads() uses a triangle instead of a quad, and may provide superior performance
 //--------------------------------------------------------------------------------------
 VOID FrmRenderTextureToScreen_GLES( FLOAT32 sx, FLOAT32 sy, FLOAT32 fScale, 
                                     CFrmTexture* pTexture,
@@ -86,6 +94,81 @@ VOID FrmRenderTextureToScreen_GLES( FLOAT32 sx, FLOAT32 sy, FLOAT32 w, FLOAT32 h
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 #endif 
+}
+
+//--------------------------------------------------------------------------------------
+// Name: FrmBlitAvoidGMemLoads()
+/* Desc:    glBlitFramebuffer() can cause unnecessary GMemLoads because it operates on system memory, bypassing tile-memory.  
+            
+            For example, if you blit from an offscreen buffer to the backbuffer, that might be okay, until you draw an overlay-font on the 
+            backbuffer, at which point GL reloads pixels from system memory for each tile (incurring unnecessary GMemLoads) because blit didn’t 
+            interface with tile-memory.
+
+            This function performs the copy in a shader instead, allowing GL to collects all draw calls, and perform the copy-operation followed by 
+            (for example) the font-overlay-draw – all in tile-memory, with no unnecessary GMemLoads.
+*/
+//--------------------------------------------------------------------------------------
+void FrmBlitAvoidGMemLoads(const GLuint sourceTexture, const GLuint shaderProgramFullScreenCopy)
+{
+    // Set the texture
+    glActiveTexture( GL_TEXTURE0 );
+    glBindTexture( GL_TEXTURE_2D, sourceTexture );
+
+    // Set the shader program
+    glUseProgram( shaderProgramFullScreenCopy );
+
+    // Draw the full-screen triangle 
+    glDrawArrays( GL_TRIANGLES, 0, 3 );            
+}
+
+//--------------------------------------------------------------------------------------
+// Name: FrmReadFramebufferCpu()
+// Desc: Read a framebuffer's texture into a Cpu buffer
+//--------------------------------------------------------------------------------------
+void FrmReadFramebufferCpu(
+    UINT8* const readPixelsBuffer,
+    const EGLint widthPixels,
+    const EGLint heightPixels,
+    const GLint frameBufferBaseInternalFormat,
+    const GLint framebufferTextureType,
+    const GLuint framebufferHandle)
+{
+    ADRENO_ASSERT(readPixelsBuffer, __FILE__, __LINE__);
+    ADRENO_ASSERT(widthPixels > 0, __FILE__, __LINE__);
+    ADRENO_ASSERT(heightPixels > 0, __FILE__, __LINE__);
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferHandle);
+
+    GLint framebufferSampleBuffers;
+    glGetFramebufferParameteriv(GL_READ_FRAMEBUFFER, GL_FRAMEBUFFER_DEFAULT_SAMPLES, &framebufferSampleBuffers);
+
+    LOGI(   "glReadPixels(0, 0, %i, %i, 0x%x, 0x%x, %p) to framebufferHandle=%i which has GL_FRAMEBUFFER_DEFAULT_SAMPLES=%i",
+            widthPixels, heightPixels, frameBufferBaseInternalFormat, framebufferTextureType, &readPixelsBuffer, framebufferHandle, framebufferSampleBuffers);
+
+    glReadPixels(0, 0, widthPixels, heightPixels, frameBufferBaseInternalFormat, framebufferTextureType, readPixelsBuffer);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+}
+
+//--------------------------------------------------------------------------------------
+// Name: FrmGLExtensionSupported()
+// Desc: Query for supporting a gles extension
+//--------------------------------------------------------------------------------------
+bool FrmGLExtensionSupported(const char*const extensionName)
+{
+    ADRENO_ASSERT(CStringNotEmpty(extensionName), __FILE__, __LINE__);
+    
+    GLint extensionsNum = 0;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &extensionsNum);
+    //LOGI("extensionNum=%i", extensionsNum);
+    for (GLint i = 0; i < extensionsNum; ++i)
+    {
+        //LOGI("%s", reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, static_cast<GLuint>(i))));
+        if(strncmp(extensionName, reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, static_cast<GLuint>(i))), 1 << 8) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 //--------------------------------------------------------------------------------------

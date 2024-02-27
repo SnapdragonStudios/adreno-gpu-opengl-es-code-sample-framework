@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef _FRM_MESH_H_
 #define _FRM_MESH_H_
@@ -363,7 +368,7 @@ public:
 
         for( UINT32 i=0; i<pSubset->m_nNumTextures; i++ )
         {
-            FrmSetTexture( i, pSubset->m_pTextures[i].m_pTexture ? pSubset->m_pTextures[i].m_pTexture->m_hTextureHandle : NULL );
+            FrmSetTexture( i, pSubset->m_pTextures[i].m_pTexture ? pSubset->m_pTextures[i].m_pTexture->m_hTextureHandle : static_cast<GLuint>(NULL) );
         }
 
 #ifdef CORE_GL_CONTEXT
@@ -377,7 +382,7 @@ public:
         FrmSetIndexBuffer( pMesh->m_hIndexBuffer );
         FrmDrawIndexedVertices( pSubset->m_nPrimType, pSubset->m_nNumIndices, 
                                 pMesh->m_nIndexSize, pSubset->m_nIndexOffset );
-        FrmSetVertexBuffer( NULL );
+        FrmSetVertexBuffer( static_cast<GLuint>(NULL) );
 #ifdef CORE_GL_CONTEXT
 		FrmSetVertexArrayObect( NULL );
 #endif

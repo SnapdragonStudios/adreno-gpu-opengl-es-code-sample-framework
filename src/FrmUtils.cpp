@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #include "FrmPlatform.h"
 #include "FrmUtils.h"
@@ -62,7 +67,7 @@ BOOL FrmLoadFile( const CHAR* strFileName, VOID** ppData, UINT32* pnSize )
 // Name: FrmUnloadFile()
 // Desc: 
 //--------------------------------------------------------------------------------------
-VOID FrmUnloadFile( VOID* pData )
+VOID FrmUnloadFile( CHAR* pData )
 {
     delete[] pData;
 }
@@ -196,8 +201,11 @@ BOOL FrmSaveImageAsTGA( const CHAR* strFileName, INT16 nWidth, INT16 nHeight,
     
     // Create the TGA file
     FRM_FILE* pFile;
-    if( FALSE == FrmFile_Open( strFileName, FRM_FILE_WRITE, &pFile ) )
+    if (FALSE == FrmFile_Open(strFileName, FRM_FILE_WRITE, &pFile))
+    {
+        LOGW("Failed to FrmFile_Open()");
         return FALSE;
+    }
 
     // Write out the TGA header
     TARGA_HEADER header;
@@ -216,3 +224,66 @@ BOOL FrmSaveImageAsTGA( const CHAR* strFileName, INT16 nWidth, INT16 nHeight,
     return TRUE;
 }
 
+//--------------------------------------------------------------------------------------
+// Name: FrmSaveImageAsTGA_RGB_to_RGBA()
+// Desc: Save a 24-bit RGB image as a 32-bit RGBA TGA file.
+//--------------------------------------------------------------------------------------
+BOOL FrmSaveImageAsTGA_RGB_to_RGBA(
+    UINT8* const rgbaBuffer,
+    const UINT8* const rgbBuffer,
+    const CHAR* const tgaFilePath,
+    const INT32 widthPixels,
+    const INT32 heightPixels)
+{
+    ADRENO_ASSERT(rgbaBuffer, __FILE__, __LINE__);
+    ADRENO_ASSERT(rgbBuffer, __FILE__, __LINE__);
+    ADRENO_ASSERT(CStringNotEmpty(tgaFilePath), __FILE__, __LINE__);
+    ADRENO_ASSERT(widthPixels > 0, __FILE__, __LINE__);
+    ADRENO_ASSERT(heightPixels > 0, __FILE__, __LINE__);
+
+    UINT8* rgbaPixel = &rgbaBuffer[0];
+    const size_t pixelsNum = widthPixels * heightPixels;
+    for (size_t pixelsIndex = 0; pixelsIndex < pixelsNum; ++pixelsIndex)
+    {
+        const UINT8* const rgbPixel = &rgbBuffer[pixelsIndex * 3];
+        rgbaPixel[0] = rgbPixel[2];
+        rgbaPixel[1] = rgbPixel[1];
+        rgbaPixel[2] = rgbPixel[0];
+        rgbaPixel[3] = 255;//full alpha
+        rgbaPixel += 4;
+    }
+
+    const BOOL saveImageAsTGAResult = FrmSaveImageAsTGA(tgaFilePath, widthPixels, heightPixels, reinterpret_cast<UINT32*>(rgbaBuffer));
+    ADRENO_ASSERT(saveImageAsTGAResult, __FILE__, __LINE__);
+    return saveImageAsTGAResult;
+}
+
+BOOL FrmSaveImageAsTGA_R_to_RGBA(
+    UINT8* const rgbaBuffer,
+    const UINT8* const rBuffer,
+    const CHAR* const tgaFilePath,
+    const INT32 widthPixels,
+    const INT32 heightPixels)
+{
+    ADRENO_ASSERT(rgbaBuffer, __FILE__, __LINE__);
+    ADRENO_ASSERT(rBuffer, __FILE__, __LINE__);
+    ADRENO_ASSERT(CStringNotEmpty(tgaFilePath), __FILE__, __LINE__);
+    ADRENO_ASSERT(widthPixels > 0, __FILE__, __LINE__);
+    ADRENO_ASSERT(heightPixels > 0, __FILE__, __LINE__);
+
+    UINT8* rgbaPixel = &rgbaBuffer[0];
+    const size_t pixelsNum = widthPixels * heightPixels;
+    for (size_t pixelsIndex = 0; pixelsIndex < pixelsNum; ++pixelsIndex)
+    {
+        const UINT8 rPixel = rBuffer[pixelsIndex];
+        rgbaPixel[0] = rPixel;
+        rgbaPixel[1] = rPixel;
+        rgbaPixel[2] = rPixel;
+        rgbaPixel[3] = 255;//full alpha
+        rgbaPixel += 4;
+    }
+
+    const BOOL saveImageAsTGAResult = FrmSaveImageAsTGA(tgaFilePath, widthPixels, heightPixels, reinterpret_cast<UINT32*>(rgbaBuffer));
+    ADRENO_ASSERT(saveImageAsTGAResult, __FILE__, __LINE__);
+    return saveImageAsTGAResult;
+}

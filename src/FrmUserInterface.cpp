@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #include "FrmPlatform.h"
 #include "FrmUserInterface.h"
@@ -202,7 +207,7 @@ BOOL CFrmUserInterface::AddHelpKey( CHAR* strKey, CHAR* strAction )
 // Name: AddFloatVariable()
 // Desc: Adds a float variable to the help interface.
 //--------------------------------------------------------------------------------------
-BOOL CFrmUserInterface::AddFloatVariable( FLOAT32* pVariable, CHAR* strName, CHAR* strFormat )
+BOOL CFrmUserInterface::AddFloatVariable( FLOAT32* pVariable, CHAR* strName, const CHAR* strFormat )
 {
     return AddVariable( (VOID*)pVariable, FRM_UI_VARIABLE_FLOAT, strName, strFormat );
 }
@@ -212,7 +217,7 @@ BOOL CFrmUserInterface::AddFloatVariable( FLOAT32* pVariable, CHAR* strName, CHA
 // Name: AddStringVariable()
 // Desc: Adds a string variable to the help interface.
 //--------------------------------------------------------------------------------------
-BOOL CFrmUserInterface::AddStringVariable( const CHAR** pVariable, CHAR* strName, CHAR* strFormat )
+BOOL CFrmUserInterface::AddStringVariable( const CHAR** pVariable, CHAR* strName, const CHAR* strFormat )
 {
     return AddVariable( (VOID*)pVariable, FRM_UI_VARIABLE_STRING, strName, strFormat );
 }
@@ -222,7 +227,7 @@ BOOL CFrmUserInterface::AddStringVariable( const CHAR** pVariable, CHAR* strName
 // Name: AddIntVariable()
 // Desc: Adds an int variable to the help interface.
 //--------------------------------------------------------------------------------------
-BOOL CFrmUserInterface::AddIntVariable( INT32* pVariable, CHAR* strName, CHAR* strFormat )
+BOOL CFrmUserInterface::AddIntVariable( INT32* pVariable, CHAR* strName, const CHAR* strFormat )
 {
     return AddVariable( (VOID*)pVariable, FRM_UI_VARIABLE_INT, strName, strFormat );
 }
@@ -232,7 +237,7 @@ BOOL CFrmUserInterface::AddIntVariable( INT32* pVariable, CHAR* strName, CHAR* s
 // Name: AddBoolVariable()
 // Desc: Adds a bool variable to the help interface.
 //--------------------------------------------------------------------------------------
-BOOL CFrmUserInterface::AddBoolVariable( BOOL* pVariable, CHAR* strName, CHAR* strTrue, CHAR* strFalse )
+BOOL CFrmUserInterface::AddBoolVariable( BOOL* pVariable, CHAR* strName, const CHAR* strTrue, const CHAR* strFalse )
 {
     if( FALSE == AddVariable( (VOID*) pVariable, FRM_UI_VARIABLE_BOOL, strName, "%s" ) )
         return FALSE;

@@ -1,10 +1,16 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef _FRM_MATH_H_
 #define _FRM_MATH_H_
 
 //#include "Crossplatform.h"
+#include "FrmPlatform.h"
 
 #if LINUX_OR_OSX && !defined(ANDROID)
 #include <netinet/in.h>

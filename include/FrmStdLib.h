@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef _FRM_STDLIB_H_
 #define _FRM_STDLIB_H_
@@ -43,5 +48,34 @@ WCHAR*      FrmWmemcpy( WCHAR* ws1, const WCHAR* ws2, UINT32 n );
 UINT32      FrmWcslen( const WCHAR* cs );
 int         FrmSwprintf( WCHAR*, int, const WCHAR*, ... );
 
+
+#if ADRENO_DEBUG
+#define ADRENO_ASSERT(expression,fileName,lineNum)                                             \
+if(!(expression))                                                                           \
+{                                                                                           \
+    LOGE("ADRENO_ASSERT failed: '%s' is not true in %s:%i", #expression, fileName, lineNum);   \
+    assert(expression);                                                                     \
+}               
+#else//#if ADRENO_DEBUG
+#define ADRENO_ASSERT(expression,fileName,lineNum)
+#endif
+
+#define ADRENO_STATIC_ASSERT(expression) static_assert(expression, #expression)
+
+inline bool CStringNotEmpty(const char* const s)
+{
+    return s && s[0];
+}
+template<typename OriginType, typename DestinationType>
+inline DestinationType CastWithAssert(const OriginType numOrigin)
+{
+    const DestinationType numDestination = static_cast<DestinationType>(numOrigin);
+#pragma warning(disable : 4389)//ignore signed/unsigned mismatches; this assert is meant to guard against any such mismatch that causes numOrigin's value to change as a result of being cast.  Any other mismatches are fine
+    ADRENO_ASSERT(numDestination == numOrigin, __FILE__, __LINE__);
+#pragma warning(default : 4389)
+    return numDestination;
+}
+
+#define ADRENO_REF(ptrIdentifier,refIdentifier) assert(ptrIdentifier); auto& refIdentifier = *ptrIdentifier
 
 #endif // _FRM_STDLIB_H_

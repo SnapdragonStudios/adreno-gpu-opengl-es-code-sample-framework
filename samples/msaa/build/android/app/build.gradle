@@ -11,10 +11,9 @@ project.afterEvaluate {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.qualcomm.msaa"
+        applicationId "com.quic.msaa"
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
@@ -27,21 +26,13 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
         }
     }
     externalNativeBuild {
         cmake {
             path file('CMakeLists.txt')
+            version "3.28.0"
         }
     }
 }
 
-dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-}

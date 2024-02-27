@@ -1,7 +1,14 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #include "FrmVertexProperty.h"
+
+#include "FrmStdLib.h"
 
 //-----------------------------------------------------------------------------
 
@@ -389,10 +396,19 @@ bool Adreno::VertexProperty::IsNormalized() const
         case Adreno::NUM_VERTEX_PROPERTY_TYPES:
         case Adreno::VERTEX_PROPERTY_TYPE_MAX:
         {
+            ADRENO_ASSERT(false, __FILE__, __LINE__);
             is_normalized = false;
             break;
         }
     }
 
     return is_normalized;
+}
+
+bool Adreno::VertexProperty::Valid() const
+{
+    ADRENO_ASSERT(Type >= Adreno::VertexPropertyType::INVALID_PROPERTY_TYPE, __FILE__, __LINE__);
+    ADRENO_ASSERT(Type < Adreno::VertexPropertyType::NUM_VERTEX_PROPERTY_TYPES, __FILE__, __LINE__);
+
+    return Type != Adreno::VertexPropertyType::INVALID_PROPERTY_TYPE;
 }
