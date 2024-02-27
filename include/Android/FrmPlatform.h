@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef _FRM_PLATFORM_H_
 #define _FRM_PLATFORM_H_
@@ -34,6 +39,7 @@
 // Linux - semaphores
 #include <semaphore.h>
 
+#include <assert.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "adreno-sdk-framework", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "adreno-sdk-framework", __VA_ARGS__))
@@ -100,7 +106,6 @@ const UINT32 NATIVE_APP_HEIGHT = 765;
 
 #define SAFE_DELETE(p)              if ((p) != NULL) delete (p); (p) = NULL;
 #define SAFE_FREE(p)                if ((p) != NULL) free(p); (p) = NULL;
-
 
 #ifdef ANDROID_CL
 VOID FrmAndroidUpdateImage( int viewID, const CHAR* path );

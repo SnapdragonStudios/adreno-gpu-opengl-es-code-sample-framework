@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef _FRM_RESOURCE_GLES_H_
 #define _FRM_RESOURCE_GLES_H_
@@ -10,6 +15,7 @@
 #include <netinet/in.h>
 #endif
 
+#include "FrmStdLib.h"
 #include "FrmPlatform.h"
 #include "FrmResource.h"
 
@@ -26,6 +32,7 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #endif
+
 
 
 //--------------------------------------------------------------------------------------
@@ -47,12 +54,12 @@ public:
         m_hTextureHandle = 0;
     }
 
-	VOID Bind( UINT32 nTextureUnit )
-	{
-		glActiveTexture( GL_TEXTURE0 + nTextureUnit );
-		glBindTexture( GL_TEXTURE_2D, m_hTextureHandle );
+    VOID Bind( UINT32 nTextureUnit )
+    {
+        glActiveTexture( GL_TEXTURE0 + nTextureUnit );
+        glBindTexture( GL_TEXTURE_2D, m_hTextureHandle );
         glEnable( GL_TEXTURE_2D );
-	}
+    }
 
     UINT32 m_nWidth;
     UINT32 m_nHeight;
@@ -80,12 +87,12 @@ public:
         m_hTextureHandle = 0;
     }
 
-	VOID Bind( UINT32 nTextureUnit )
-	{
-		glActiveTexture( GL_TEXTURE0 + nTextureUnit );
-		glBindTexture( GL_TEXTURE_3D_OES, m_hTextureHandle );
+    VOID Bind( UINT32 nTextureUnit )
+    {
+        glActiveTexture( GL_TEXTURE0 + nTextureUnit );
+        glBindTexture( GL_TEXTURE_3D_OES, m_hTextureHandle );
         glEnable( GL_TEXTURE_3D_OES );
-	}
+    }
 
     UINT32 m_nWidth;
     UINT32 m_nHeight;
@@ -113,12 +120,12 @@ public:
         m_hTextureHandle = 0;
     }
 
-	VOID Bind( UINT32 nTextureUnit )
-	{
-		glActiveTexture( GL_TEXTURE0 + nTextureUnit );
-		glBindTexture( GL_TEXTURE_CUBE_MAP, m_hTextureHandle );
+    VOID Bind( UINT32 nTextureUnit )
+    {
+        glActiveTexture( GL_TEXTURE0 + nTextureUnit );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, m_hTextureHandle );
         glEnable( GL_TEXTURE_CUBE_MAP );
-	}
+    }
 
     UINT32 m_nWidth;
     UINT32 m_nHeight;
@@ -133,6 +140,17 @@ BOOL FrmCreateTexture( UINT32 nWidth, UINT32 nHeight, UINT32 nNumLevels,
 BOOL FrmCreateTexture( UINT32 nWidth, UINT32 nHeight, UINT32 nNumLevels,
                        UINT32 nInternalPixelFormat, UINT32 nPixelType, UINT32 nBorder,
                        VOID* pInitialData, UINT32 nBaseSize, GLint* pTextureHandle );
+
+void FrmCreateTexture(
+    GLuint* const textureHandlePtr,
+    const GLenum textureSizedInternalFormat,
+    const GLsizei widthPixels,
+    const GLsizei heightPixels);
+
+void FrmCreateAndBindFramebufferToTexture(
+    GLuint* const frameBufferHandlePtr, 
+    const GLuint colorTextureHandle, 
+    const GLuint depthTextureHandle=GL_NONE);                       
 
 BOOL FrmCreateTexture3D( UINT32 nWidth, UINT32 nHeight, UINT32 nDepth, UINT32 nLevel,
                          UINT32 nInternalPixelFormat, UINT32 nPixelType, UINT32 nBorder,
@@ -169,10 +187,10 @@ public:
         m_hBufferHandle = 0;
     }
 
-	VOID Bind( UINT32 nUnused ) 
-	{
-		glBindBuffer( GL_ARRAY_BUFFER, m_hBufferHandle );
-	}
+    VOID Bind( UINT32 nUnused ) 
+    {
+        glBindBuffer( GL_ARRAY_BUFFER, m_hBufferHandle );
+    }
 
     UINT32 m_nNumVertices;
     UINT32 m_nVertexSize;
@@ -207,10 +225,10 @@ public:
         m_hBufferHandle = 0;
     }
 
-	VOID Bind( UINT32 nUnused ) 
-	{
-	    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_hBufferHandle );
-	}
+    VOID Bind( UINT32 nUnused ) 
+    {
+        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_hBufferHandle );
+    }
 
     UINT32 m_nNumIndices;
     UINT32 m_nIndexSize;
@@ -261,7 +279,7 @@ struct FRM_VERTEX_ELEMENT
     UINT16 nType;         // OpenGL data type
     UINT8  bNormalized;   // Whether to normalize the value
     UINT16 nStride;       // Stride of this component
-//	BYTE* pStartAddress; //set to the address in the buffer of first index
+//  BYTE* pStartAddress; //set to the address in the buffer of first index
 
 
 #if LINUX_OR_OSX && !defined(ANDROID)
@@ -315,12 +333,12 @@ public:
 //--------------------------------------------------------------------------------------
 inline VOID FrmClearVertexAttributeArrays()
 {
-	GLint i, iMaxAttribs = 0;
-	glGetIntegerv( GL_MAX_VERTEX_ATTRIBS, &iMaxAttribs ); 
-	for( i=0 ; i<iMaxAttribs ; i++ )
-	{
-		glDisableVertexAttribArray( (GLuint)i );
-	}
+    GLint i, iMaxAttribs = 0;
+    glGetIntegerv( GL_MAX_VERTEX_ATTRIBS, &iMaxAttribs ); 
+    for( i=0 ; i<iMaxAttribs ; i++ )
+    {
+        glDisableVertexAttribArray( (GLuint)i );
+    }
 }
 
 //--------------------------------------------------------------------------------------
@@ -336,7 +354,7 @@ inline VOID FrmSetTexture( UINT32 nTextureUnit, GLuint hTextureHandle )
 #ifdef CORE_GL_CONTEXT
 inline VOID FrmSetVertexArrayObect(GLuint hVertexArrayObject)
 {
-	glBindVertexArray(hVertexArrayObject);
+    glBindVertexArray(hVertexArrayObject);
 }
 #endif
 
@@ -391,7 +409,7 @@ inline VOID FrmDrawIndexedVertices( UINT32 nPrimType, UINT32 nNumIndices,
                                     UINT32 nIndexSize, UINT32 nIndexOffset )
 {
     UINT32 nType   = nIndexSize == sizeof(UINT32) ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
-    VOID*  pOffset = (VOID*)( nIndexSize * nIndexOffset );
+    VOID*  pOffset = reinterpret_cast<VOID*>( nIndexSize * nIndexOffset );
 
     glDrawElements( nPrimType, nNumIndices, nType, pOffset );
 }
@@ -403,8 +421,42 @@ inline VOID FrmDrawIndexedVertices( UINT32 nPrimType, UINT32 nNumIndices,
 //--------------------------------------------------------------------------------------
 inline VOID FrmDrawBuffers( UINT32 n, const GLenum* buffers)
 {
-	glDrawBuffers(n, buffers);;
+    glDrawBuffers(n, buffers);;
 }
 #endif
+
+template<size_t kSize>
+class ResourceHandleArray
+{
+public:
+    void Initialize()
+    {
+        for (size_t i = 0; i < kSize; ++i)
+        {
+            m_resources[i] = GL_NONE;
+        }
+    }
+
+    const GLuint& operator[](const size_t index) const
+    {
+        ADRENO_ASSERT(index < kSize, __FILE__, __LINE__);
+        return m_resources[index];
+    }
+    GLuint& operator[](const size_t index)
+    {
+        return const_cast<GLuint&>(static_cast<const ResourceHandleArray*>(this)->operator[](index));
+    }
+    bool IsNull(const GLuint v)
+    {
+        return v == GL_NONE;
+    }
+    size_t Size() const
+    {
+        return kSize;
+    }
+
+private:
+    GLuint m_resources[kSize];
+};
 
 #endif // _FRM_RESOURCE_GLES_H_

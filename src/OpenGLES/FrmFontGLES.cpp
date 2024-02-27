@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #include "FrmPlatform.h"
 #include "OpenGLES/FrmFontGLES.h"
@@ -205,7 +210,7 @@ BOOL CFrmFontGLES::Create( const CHAR* strFontFileName )
 VOID CFrmFontGLES::Destroy()
 {
     if( m_hShader ) glDeleteProgram( m_hShader );
-    m_hShader = NULL;
+    m_hShader = static_cast<UINT32>(NULL);
 
     if( m_pTexture ) m_pTexture->Release();
     m_pTexture = NULL;

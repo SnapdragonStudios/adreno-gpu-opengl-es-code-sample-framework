@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #include "FrmPlatform.h"
 #include "FrmMesh.h"
@@ -384,7 +389,7 @@ BOOL FrmWriteAnimation( const CHAR* strFileName, FRM_ANIMATION_SET* pAnimationSe
 	FrmStrcpy( DstAnimSet.m_strName, pAnimationSet->m_strName );
 	DstAnimSet.m_nPeriodInTicks = pAnimationSet->m_nPeriodInTicks;
 	DstAnimSet.m_nNumAnimations = pAnimationSet->m_nNumAnimations;
-	DstAnimSet.m_pAnimations    = (FRM_ANIMATION*)nAnimationsOffset;
+	DstAnimSet.m_pAnimations    = reinterpret_cast<FRM_ANIMATION*>(nAnimationsOffset);
 	FrmFile_Write( file, &DstAnimSet, sizeof(DstAnimSet) );
 
 	// Write the animations
@@ -394,8 +399,8 @@ BOOL FrmWriteAnimation( const CHAR* strFileName, FRM_ANIMATION_SET* pAnimationSe
 		FRM_ANIMATION DstAnim = {0};
 		FrmStrcpy( DstAnim.m_strFrameName, pSrcAnim->m_strFrameName );
 		DstAnim.m_nNumKeys   = pSrcAnim->m_nNumKeys;
-		DstAnim.m_pKeyTimes  = (UINT32*)nKeyTimesOffset;
-		DstAnim.m_pKeyValues = (FRM_ANIMATION_KEY*)nKeyValuesOffset;
+		DstAnim.m_pKeyTimes  = reinterpret_cast<UINT32*>(nKeyTimesOffset);
+		DstAnim.m_pKeyValues = reinterpret_cast<FRM_ANIMATION_KEY*>(nKeyValuesOffset);
 		FrmFile_Write( file, &DstAnim, sizeof(DstAnim) );
 
 		nKeyTimesOffset  += DstAnim.m_nNumKeys * sizeof(UINT32);

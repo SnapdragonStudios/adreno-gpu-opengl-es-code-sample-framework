@@ -35,9 +35,9 @@ void android_main(android_app* pApp)
 
 ```
 
-The platform-specific main entry point instantiates and then runs a CFrmAppContainer object. This object contains a CFrmApplication object, which is a virtual class derived and implemented by the application’s main class. The CFrmAppContainer is an internal, platform-specific object that is responsible for window initialization, configuring the frame buffer to obtain a render context, and running event handling loop. The CFrmApplication object is derived by the application, allowing the application a way to initialize itself, render a scene, and clean everything up. 
+The platform-specific main entry point instantiates and then runs a CFrmAppContainer object. This object contains a CFrmApplication object, which is a virtual class derived and implemented by the application’s main class. The CFrmAppContainer is an internal, platform-specific object that is responsible for window initialization, configuring the frame buffer to obtain a render context, and running the event handling loop. The CFrmApplication object is derived by the application, allowing the application to initialize itself, render a scene, and clean everything up. 
 
-As demonstrated in the [Hello Framework](samples/hello-fw) sample, this class is used and derived via a CSample class. The derived class is responsible for construction, initialization, handling resize events, updating and rendering the scene, and cleanup. 
+As demonstrated in the [Hello Framework](samples/hello_fw) sample, this class is used and derived via a CSample class. The derived class is responsible for construction, initialization, handling resize events, updating and rendering the scene, and cleanup. 
 
 ```
 
@@ -71,7 +71,7 @@ CFrmApplication* FrmCreateApplicationInstance()
  ```
 
 
-The CSample constructor is, as one would expect, the appropriate place to initialize member variables. Additionally, it can be used to override inherited members from the base CFrmApplication class, like the display properties. In the future, more display attributes, like to control bit frame buffer and depth-stencil bit depths, will be exposed. 
+The CSample constructor is, as one would expect, the appropriate place to initialize member variables. Additionally, it can be used to override inherited members from the base CFrmApplication class, like the display properties. In the future, more display attributes, like frame buffer and depth-stencil bit depths, will be exposed. 
 
 NOTE: The member variable m_OpenGLESVersion defaults to GLES2. 
 However, you can set it to GLES3 in order to enable OpenGLES 3.0 functionality. 
@@ -82,7 +82,7 @@ The frame buffer is configured for various display modes through the CFrmRenderC
 
 ## File I/O Abstraction
 
-All Operating System calls such as file I/O are wrapped and abstracted to achieve platform independence. For instance, FrmFile.h contains a method called FrmFile_Open() which abstracts out the opening of files. A developer might be tempted to call fopen() or CreateFile() instead, but the benefit of using FrmFile_Open() is that it is guaranteed to function on all operating systems that are supported by the Framework. 
+All Operating System calls such as file I/O are wrapped and abstracted to achieve platform independence. For instance, FrmFile.h contains a method called FrmFile_Open() which abstracts the opening of files. A developer might be tempted to call fopen() or CreateFile() instead, but the benefit of using FrmFile_Open() is that it is guaranteed to function on all operating systems that are supported by the Framework. 
 
 ## C Standard Library Abstraction
 
@@ -132,7 +132,7 @@ CFrmTexture* pLogoTexture = resource.GetTexture( "Logo" );
  
  ```
 
-A primary benefit of using packed resource files is the ability to abstract texture names from actual files. For example, artist-created meshes often embed specific textures file names that can create conflicts. For example, if TROLL.MESH and OGRE.MESH both refer to a texture called “face.bmp”, the resource packer can help avoid name conflicts since troll textures will be stored in troll.pak and and ogre textures will be stored in orge.pak. 
+A primary benefit of using packed resource files is the ability to abstract texture names from actual files. For example, artist-created meshes often embed specific textures file names that can create conflicts. For example, if TROLL.MESH and OGRE.MESH both refer to a texture called “face.bmp”, the resource packer can help avoid name conflicts since troll textures will be stored in troll.pak and and ogre textures will be stored in ogre.pak. 
 
 ## Text Rendering
 
@@ -183,7 +183,7 @@ slotWorldMat = glGetUniformLocation( hShader, "matWorld" );
 
 ## Geometry Meshes
 
-The Framework provides runtime data structures for storing geometry meshes, which even includes animation data. The data structures are loaded verbatim from a binary mesh file, which was designed for run-time performance and minimal loading effort. Specifically, mesh files are comprised to two sections, system memory data structures that need to remain memory resident for the life of the mesh, and buffer initialization data that can be discarded after loading. 
+The Framework provides runtime data structures for storing geometry meshes, which even includes animation data. The data structures are loaded verbatim from a binary mesh file, which was designed for run-time performance and minimal loading effort. Specifically, mesh files are comprised of two sections: system memory data structures that need to remain memory resident for the life of the mesh, and buffer initialization data that can be discarded after loading. 
 
 Loading a mesh file requires just two memory allocations and two main file reads. Afterwards, some "pointer fixup" is required, which involves a simple traversal of the mesh data structures. Then, in a separate step, the buffer initialization data is used to create and populate vertex buffer and index buffer objects. Finally, a packed resource file can be supplied to the mesh loading code in order to bind actual textures to any references in the mesh. 
 
@@ -198,9 +198,9 @@ if( FALSE == Mesh.MakeDrawable( &resource ) )
 
 ``` 
 
-Internally, a CFrmMesh object is a hierarchy of transformation frames, called FRM_MESH_FRAME. Each frame may optionally include actual mesh data and pointers to child and/or sibling frames. Actual mesh rendering data is stored in FRM_MESH and FRM_MESH_SUBSET structures. The former is essentially a wrapper for a vertex buffer object, while the latter is specific rendering data like materials and textures for a subset of the mesh. 
+Internally, a CFrmMesh object is a hierarchy of transformation frames called FRM_MESH_FRAME. Each frame may optionally include actual mesh data and pointers to child and/or sibling frames. Actual mesh rendering data is stored in FRM_MESH and FRM_MESH_SUBSET structures. The former is essentially a wrapper for a vertex buffer object, while the latter is other rendering data like materials and textures for a subset of the mesh. 
 
-Note that Framework meshes also support animation data via the FRM_ANIMATION structure. The animation data is the common garden-variety set of key-framed rotations, translations, and scale values. To animate a mesh, the Framework can use a specified time value to interpolate key frames and build transformation matrices which it writes back in the mesh’s frame hierarchy. Since a single mesh can have numerous animations (run, walk, jump, etc.) associated with it, animation data is stored in separate files. 
+Note that Framework meshes also support animation data via the FRM_ANIMATION structure. The animation data is the usual set of key-framed rotations, translations, and scale values. To animate a mesh, the Framework can use a specified time value to interpolate key frames and build transformation matrices which, it writes back in the mesh’s frame hierarchy. Since a single mesh can have numerous animations (run, walk, jump, etc.) associated with it, animation data is stored in separate files. 
 
 ## Graphical User Interface Components
 

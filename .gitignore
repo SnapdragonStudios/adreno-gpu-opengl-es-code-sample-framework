@@ -5,4 +5,11 @@ intermediates/
 outputs/
 generated/
 tmp/
+assets/
 local.properties
+lint-results*
+*.dll
+*.exe
+project/tools/solution/
+samples/*/build/android/app/Media/
+samples/*/build/android/external/

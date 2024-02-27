@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #include "FrmPlatform.h"
 #include "FrmFile.h"
@@ -12,7 +17,7 @@ struct FRM_FILE
 };
 
 AAssetManager* g_pAssetManager = 0;
-const char* g_pInternalDataPath;
+const char* g_pInternalDataPath = "";
 
 //--------------------------------------------------------------------------------------
 // Basic file functions - only reading is currently supported on Android
@@ -30,7 +35,7 @@ BOOL FrmFile_Open( const CHAR* strFileName, UINT32 nDirection, FRM_FILE** ppFile
     {
         // Get the internal data path for the app
         const char *internalDataPath = g_pInternalDataPath;
-        if( internalDataPath == NULL )
+        if(internalDataPath == NULL)
             return FALSE;
 
         // Full path
@@ -40,6 +45,7 @@ BOOL FrmFile_Open( const CHAR* strFileName, UINT32 nDirection, FRM_FILE** ppFile
         FrmSprintf( logMsg, sizeof(logMsg), "Opening file for writing: %s", fullPath );
         FrmLogMessage( logMsg );
         *ppFile = (FRM_FILE*)fopen( fullPath, "wb" );
+        LOGI("FrmFile_Open() attempts to open:%s with *ppFile=%p", logMsg, *ppFile);
         return *ppFile ? TRUE : FALSE;
     }
 

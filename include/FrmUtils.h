@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef _FRM_UTILS_H_
 #define _FRM_UTILS_H_
@@ -84,7 +89,7 @@ const CHAR* FrmGetMessageLog();
 // Helper functions to read an entire file
 //--------------------------------------------------------------------------------------
 BOOL FrmLoadFile( const CHAR* strFileName, VOID** ppData, UINT32* pnSize = NULL );
-VOID FrmUnloadFile( VOID* pData );
+VOID FrmUnloadFile( CHAR* pData );
 
 BYTE* FrmUtils_LoadTGA(const CHAR*, UINT32*, UINT32*, UINT32*); 
 UINT8* FrmUtils_LoadATC( const CHAR*, UINT32*, UINT32*,UINT32*, UINT32*);
@@ -94,6 +99,18 @@ UINT8* FrmUtils_LoadATC( const CHAR*, UINT32*, UINT32*,UINT32*, UINT32*);
 //--------------------------------------------------------------------------------------
 BOOL FrmSaveImageAsTGA( const CHAR* strFileName, INT16 nWidth, INT16 nHeight,
                         UINT32* pBits32 );
+BOOL FrmSaveImageAsTGA_RGB_to_RGBA(
+    UINT8* const rgbaBuffer,
+    const UINT8* const rgbBuffer,
+    const CHAR* const tgaFilePath,
+    const INT32 widthPixels,
+    const INT32 heightPixels);
+BOOL FrmSaveImageAsTGA_R_to_RGBA(
+    UINT8* const rgbaBuffer,
+    const UINT8* const rBuffer,
+    const CHAR* const tgaFilePath,
+    const INT32 widthPixels,
+    const INT32 heightPixels);
 BOOL FrmSaveScreenShot( const CHAR* strFileName );
 
 
@@ -202,6 +219,35 @@ public:
     UINT32  m_nFrame;
 };
 
+inline timespec operator-(const timespec& t0, const timespec& t1)
+{
+    timespec ret = t0;
+    ret.tv_sec -= t1.tv_sec;
+    ret.tv_nsec -= t1.tv_nsec;
+
+    return ret;
+}
+
+namespace Adreno
+{
+    inline FLOAT64 Seconds(const timespec& usec)
+    {
+        const FLOAT64 kSecondsToNanoseconds = 1000000000.;
+        return static_cast<FLOAT64>(usec.tv_sec) + static_cast<FLOAT64>(usec.tv_nsec) / kSecondsToNanoseconds;
+    }
+
+    ///gets the wall clock time, not the time according to the "process timeline" (eg time incremented only when the process is running)
+    inline bool ClockGetTime(timespec* const tPtr)
+    {
+        ADRENO_REF(tPtr, t);
+
+        const int clock_gettime_result = clock_gettime(CLOCK_REALTIME, &t);
+
+        const bool success = clock_gettime_result == 0;
+        ADRENO_ASSERT(success, __FILE__, __LINE__);
+        return success;
+    }
+}
 
 //--------------------------------------------------------------------------------------
 // Name: class CFrmArcBall

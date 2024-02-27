@@ -1,0 +1,9 @@
+[submodule "assets"]
+	path = assets
+	url = https://github.com/quic/game-assets-for-adreno-gpu-code-samples
+[submodule "framework/external/KTX-Software"]
+	path = framework/external/KTX-Software
+	url = https://github.com/KhronosGroup/KTX-Software
+[submodule "framework/external/tinygltf"]
+	path = framework/external/tinygltf
+	url = https://github.com/syoyo/tinygltf

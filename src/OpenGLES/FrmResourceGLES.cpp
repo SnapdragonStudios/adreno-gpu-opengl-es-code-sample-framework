@@ -1,13 +1,21 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
+
+#include "OpenGLES/FrmResourceGLES.h"
 
 #include "FrmPlatform.h"
-#include "OpenGLES/FrmResourceGLES.h"
 #include "FrmUtils.h"
 #ifdef CORE_GL_CONTEXT
 #include "GLES3/gl3.h"
 #endif
 #include <stdio.h>
+
+#include <GLES3/gl3.h>
 
 //--------------------------------------------------------------------------------------
 // Name: FrmCreateTexture()
@@ -122,6 +130,57 @@ BOOL FrmCreateTexture( UINT32 nWidth, UINT32 nHeight, UINT32 nNumLevels,
     return TRUE;
 }
 
+//--------------------------------------------------------------------------------------
+// Name: FrmCreateTexture()
+// Desc: Create a texture resource with no initial data.
+//--------------------------------------------------------------------------------------
+void FrmCreateTexture(
+    GLuint* const textureHandlePtr,
+    const GLenum textureSizedInternalFormat,
+    const GLsizei widthPixels,
+    const GLsizei heightPixels)
+{
+    ADRENO_REF(textureHandlePtr, textureHandle);
+    ADRENO_ASSERT(widthPixels > 0, __FILE__, __LINE__);
+    ADRENO_ASSERT(heightPixels > 0, __FILE__, __LINE__);
+
+    glGenTextures(1, &textureHandle);
+    glBindTexture(GL_TEXTURE_2D, textureHandle);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    //LOGI(   "glTexStorage2D(GL_TEXTURE_2D, 0, textureSizedInternalFormat=0x%x, widthPixels=%i, heightPixels=%i",
+    //        textureSizedInternalFormat, widthPixels, heightPixels);
+    glTexStorage2D(
+        GL_TEXTURE_2D,
+        1,
+        textureSizedInternalFormat,
+        widthPixels,
+        heightPixels);
+}
+
+//--------------------------------------------------------------------------------------
+// Name: FrmCreateAndBindFramebufferToTexture()
+// Desc: Create a framebuffer resource and bind it to a color (and possibly a depth) texture, with no initial data.
+//--------------------------------------------------------------------------------------
+void FrmCreateAndBindFramebufferToTexture(
+    GLuint* const frameBufferHandlePtr, 
+    const GLuint colorTextureHandle, 
+    const GLuint depthTextureHandle)
+{
+    ADRENO_REF(frameBufferHandlePtr, frameBufferHandle);
+
+    glGenFramebuffers(1, &frameBufferHandle);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferHandle);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTextureHandle, 0);
+    if (depthTextureHandle != GL_NONE)
+    {
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTextureHandle, 0);
+    }
+
+    const GLenum checkFramebufferStatusResult = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+    ADRENO_ASSERT(checkFramebufferStatusResult == GL_FRAMEBUFFER_COMPLETE, __FILE__, __LINE__);
+}
 
 //--------------------------------------------------------------------------------------
 // Name: FrmCreateTexture()
@@ -523,4 +582,3 @@ VOID CFrmFrameBufferObject::End()
     glViewport( m_PreviousViewport.x, m_PreviousViewport.y,
                 m_PreviousViewport.w, m_PreviousViewport.h );
 }
-

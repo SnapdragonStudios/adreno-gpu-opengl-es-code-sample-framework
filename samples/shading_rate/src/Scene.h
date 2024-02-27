@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef SCENE_H
 #define SCENE_H
@@ -33,8 +38,8 @@ private:
     GLuint m_projMatrixLoc;
     GLuint m_vertexLoc;
     GLuint m_uvLoc;
-    CHAR* m_pFragmentShader;
-    CHAR* m_pVertexShader;
+    const CHAR* m_pFragmentShader;
+    const CHAR* m_pVertexShader;
     GLuint m_textureHandle;
 
     CFrmFontGLES m_font;

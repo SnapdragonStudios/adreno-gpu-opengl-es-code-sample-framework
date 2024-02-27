@@ -1,7 +1,13 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #include "FrmIndexBuffer.h"
+#include "FrmStdLib.h"
 
 //-----------------------------------------------------------------------------
 
@@ -39,4 +45,20 @@ void Adreno::IndexBuffer::Resize( UINT32 num_indices )
     {
         Indices = new UINT32[ num_indices ];
     }
+}
+
+//-----------------------------------------------------------------------------
+UINT32 Adreno::IndexBuffer::Index(const size_t indexOfIndex) const
+{
+    ADRENO_ASSERT(Indices, __FILE__, __LINE__);
+    ADRENO_ASSERT(indexOfIndex < NumIndices, __FILE__, __LINE__);
+
+    return Indices[indexOfIndex];
+}
+
+//-----------------------------------------------------------------------------
+void Adreno::IndexBuffer::AssertValid() const
+{
+    ADRENO_ASSERT(NumIndices > 0, __FILE__, __LINE__);
+    ADRENO_ASSERT(Indices, __FILE__, __LINE__);
 }

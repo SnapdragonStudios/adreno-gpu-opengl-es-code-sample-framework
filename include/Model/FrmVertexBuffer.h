@@ -1,5 +1,10 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef ADRENO_VERTEX_BUFFER_H
 #define ADRENO_VERTEX_BUFFER_H
@@ -21,7 +26,8 @@ namespace Adreno
          VertexBuffer();
         ~VertexBuffer();
 
-        void IntializeBuffer( UINT32 num_verts );
+        void InitializeBuffer( UINT32 num_verts );
+        void AssertValid() const;
     };
 }
 

@@ -1,14 +1,19 @@
-// Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
-// SPDX-License-Identifier: BSD-3-Clause
+//============================================================================================================
+//
+//
+//                  Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+//                              SPDX-License-Identifier: BSD-3-Clause
+//
+//============================================================================================================
 
 #ifndef _FRM_UTILS_GLES_H_
 #define _FRM_UTILS_GLES_H_
 
-#include "FrmPlatform.h"
-#include "FrmUtils.h"
+#include <EGL/egl.h>
 #include "FrmMath.h"
-#include "OpenGLES/FrmResourceGLES.h"
 #include "FrmStdLib.h"
+#include "FrmUtils.h"
+#include "OpenGLES/FrmResourceGLES.h"
 
 
 //--------------------------------------------------------------------------------------
@@ -21,6 +26,16 @@ VOID FrmRenderTextureToScreen_GLES( FLOAT32 sx, FLOAT32 sy, FLOAT32 fScale,
 VOID FrmRenderTextureToScreen_GLES( FLOAT32 sx, FLOAT32 sy, FLOAT32 w, FLOAT32 h,
                                     UINT32 hTexture, INT32 hShader, 
                                     INT32 hScreenSizeLoc );
+
+void FrmBlitAvoidGMemLoads(const GLuint sourceTexture, const GLuint shaderProgramFullScreenCopy);
+void FrmReadFramebufferCpu(
+    UINT8* const readPixelsBuffer,
+    const EGLint widthPixels,
+    const EGLint heightPixels,
+    const GLint frameBufferBaseInternalFormat,
+    const GLint framebufferTextureType,
+    const GLuint framebufferHandle);
+bool FrmGLExtensionSupported(const char*const extensionName);
 
 //--------------------------------------------------------------------------------------
 // Name: class CFrmShowMeshVectors
@@ -62,6 +77,5 @@ protected:
     FRMVECTOR3* m_vTangents;
     FRMVECTOR3* m_vBinormals;
 };
-
 
 #endif // _FRM_UTILS_GLES_H_
