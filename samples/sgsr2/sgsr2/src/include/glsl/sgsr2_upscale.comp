@@ -64,8 +64,8 @@ void main()
     vec2 InputInfoViewportSize = vec2(params.renderSize);
     vec2 Hruv = (vec2(gl_GlobalInvocationID.xy) + vec2(0.5)) * HistoryInfoViewportSizeInverse;
     vec2 Jitteruv;
-    Jitteruv.x = clamp(Hruv.x + (InputJitter.x * HistoryInfoViewportSizeInverse.x), 0.0, 1.0);
-    Jitteruv.y = clamp(Hruv.y + (InputJitter.y * HistoryInfoViewportSizeInverse.y), 0.0, 1.0);
+    Jitteruv.x = clamp(Hruv.x + (InputJitter.x * params.renderSizeRcp.x), 0.0, 1.0);
+    Jitteruv.y = clamp(Hruv.y + (InputJitter.y * params.renderSizeRcp.y), 0.0, 1.0);
 
     ivec2 InputPos = ivec2(Jitteruv * InputInfoViewportSize);
 
