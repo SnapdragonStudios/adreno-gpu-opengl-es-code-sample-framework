@@ -916,7 +916,7 @@ static void GLTFLoaderSetup(tinygltf::TinyGLTF*const loaderPtr)
 {
     ADRENO_REF(loaderPtr, loader);
     loader.SetImageLoader(&StubGltfLoadImageDataFunction, nullptr);
-    loader.SetFsCallbacks(tinygltf::FsCallbacks{ &Gltf_FileExists, &Gltf_ExpandFilePath, &Gltf_ReadWholeFile, &Gltf_WriteWholeFile, NULL });
+    loader.SetFsCallbacks(tinygltf::FsCallbacks{ &Gltf_FileExists, &Gltf_ExpandFilePath, &Gltf_ReadWholeFile, &Gltf_WriteWholeFile, &tinygltf::GetFileSizeInBytes });
 }
 static bool GltfModelNodeMeshIndexValid(const int gltfModelNodeMeshIndex, const size_t gltfModelMeshesSize)
 {
