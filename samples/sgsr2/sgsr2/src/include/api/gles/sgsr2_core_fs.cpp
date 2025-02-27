@@ -312,7 +312,8 @@ void SGSR2_Core::ExecuteJobGraphics(SgsrPass pass, Sgsr2Ubo &ubo) {
     glBindVertexArray(m_VAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	//Unbind VAO
+	glBindVertexArray(0);
 
 }
 
